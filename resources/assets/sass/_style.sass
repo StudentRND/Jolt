@@ -1,0 +1,101 @@
+body
+  font:
+    family: $font-family
+    size: $font-size-base
+  background-color: $color-background
+  color: $color-foreground
+  a
+    color: $color-foreground
+
+  & > .error
+    background-color: $color-accent
+    color: $color-background
+    text-align: center
+    padding: 1rem
+
+  header, footer, .content, .error
+    width: 100%
+    max-width: $width-max
+    margin: 0 auto
+    +grid-container
+
+  %button
+    font-family: $font-family
+    border: 1px solid $color-foreground-dark
+    background-color: $color-foreground-dark
+    color: $color-background
+    &:hover
+      background-color: $color-foreground
+
+  h2
+    font-size: $f3
+
+  h3
+    font-size: $f2
+
+  form
+    text-align: center
+    .field
+      +grid-container
+      padding-bottom: 0.5rem
+      text-align: left
+      label
+        +grid-column(3)
+        text-align: right
+      input:not([type="submit"]), textarea
+        +grid-column(9)
+        background-color: $color-background
+        color: $color-foreground
+        font-family: $font-family
+        color: $color-foreground
+        border: none
+        border-bottom: 1px solid $color-foreground-dark
+        &::-webkit-input-placeholder
+          color: $color-foreground-dark
+
+        &:-moz-placeholder
+          color: $color-foreground-dark
+          opacity: 1
+
+        &::-moz-placeholder
+          color: $color-foreground-dark
+          opacity: 1
+
+        &:-ms-input-placeholder
+          color: $color-foreground-dark
+    input[type="submit"]
+      @extend %button
+
+  header
+    margin-bottom: 2rem
+    h1
+      +grid-column(4)
+      margin: 0
+      a
+        display: inline-block
+        overflow: hidden
+        font-size: 1px
+        text-indent: -50rem
+        width: 10rem
+        height: $f4
+        position: relative
+        top: 1rem
+        background:
+          image: url('/assets/img/logo.svg')
+          position: 0 50%
+          repeat: no-repeat
+          size: contain
+    nav
+      +grid-column(8)
+      text-align: right
+      ul
+        padding: 0
+        li
+          list-style-type: none
+          margin: 0 0 0 1rem
+          display: inline-block
+
+  footer, footer a
+    margin-top: 2rem
+    font-size: $f0
+    color: $color-foreground-dark
