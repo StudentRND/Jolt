@@ -18,7 +18,8 @@ class VerifyAdmin
     public function handle($request, Closure $next, $guard = null)
     {
         if (!Models\User::IsLoggedIn()) \abort(401);
-        $campaign = Models\Campaign::find(\Route::current()->parameter('campaign'));
+        $campaign = \Route::current()->parameter('campaign');
+        $campaign = $campaign instanceof Models\Campaign ? $campaign : Models\Campaign::find($campaign);
         if (!Models\User::Me()->IsAdminFor($campaign) && !Models\User::Me()->is_superadmin) \abort(403);
         return $next($request);
     }
