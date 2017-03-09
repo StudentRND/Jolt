@@ -9,7 +9,6 @@ class Campaign extends Model
     protected $rules = [
         'name'          => 'required|min:3|max:128',
         'url'           => 'active_url',
-        'domain'        => 'regex:/^(([a-z0-9\-]+\.)+[a-z]{2,}){0,1}$/',
         'starts_at'     => 'date',
         'ends_at'       => 'date'
     ];

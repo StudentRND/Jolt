@@ -31,7 +31,9 @@ foreach (\config('app.enabled_link_domains') as $domain) {
         \Route::get('/', 'CampaignController@getIndex');
         \Route::get('/updates', 'CampaignController@getIndex');
         \Route::post('/link', 'CampaignController@postLink');
+
         \Route::get('/state.json', 'CampaignController@getState');
+        \Route::get('/timeline.csv', 'CampaignController@getClicksTimeline');
 
         \Route::post('/share/custom', 'CampaignController@postShareCustom');
         \Route::get('/share/{site}', 'CampaignController@getShare');

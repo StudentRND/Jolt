@@ -18,6 +18,7 @@ class User extends Model
     /////////////////////////
     public function campaigns() { return $this->belongsToMany(Campaign::class); }
     public function links() { return $this->hasMany(Link::class); }
+    public function clicks() { return $this->hasManyThrough(Click::class, Link::class); }
 
     /////////////////////////
     // Functions
@@ -25,9 +26,9 @@ class User extends Model
 
     public function IsAdminFor(Campaign $campaign)
     {
-        $pivot = $this->campaigns()->where('campaign_id', '=', $campaign->id)->withPivot('is_admin')->first()->pivot;
+        $record = $this->campaigns()->where('campaign_id', '=', $campaign->id)->withPivot('is_admin')->first();
 
-        return $this->is_superadmin || (isset($pivot) && $pivot->is_admin);
+        return $this->is_superadmin || (isset($record) && $record->pivot->is_admin);
     }
 
     /////////////////////////

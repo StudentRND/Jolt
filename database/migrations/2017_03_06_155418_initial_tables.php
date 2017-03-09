@@ -48,7 +48,7 @@ class InitialTables extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('campaign_id')->unsigned();
-            $table->boolean('is_admin')->default(true);
+            $table->boolean('is_admin')->default(false);
             $table->timestamps();
         });
 

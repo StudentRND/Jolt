@@ -55,6 +55,16 @@ class CampaignController extends Controller
         ]);
     }
 
+    public function getClicksTimeline()
+    {
+        $clicks = \DB::select('select DATE(link_clicks.created_at) as clicked_at, DATE(links.created_at) as created_at, COUNT(*) as count FROM link_clicks LEFT JOIN links ON (links.id = link_clicks.link_id) WHERE links.user_id = ? GROUP BY clicked_at, created_at', [Models\User::Me()->id]);
+
+        return "created_at,clicked_at,count\n"
+            .implode("\n", array_map(function($log){
+                return implode(",", [$log->created_at, $log->clicked_at, $log->count]);
+            }, $clicks));
+    }
+
     /////////////////////////
     // User Promotion
     /////////////////////////

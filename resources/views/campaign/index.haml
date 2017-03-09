@@ -32,7 +32,9 @@
             %a(href="/c/#{campaign.id}/share/email" target="_blank") Send an Email
 
     -if me.links|length > 0
-      %h3 Link Performance
+      .graphs
+        %h4 Link Clicks Arcs: Time Created to Clicked
+        #timeline
       %table.links
         %tbody
           -for link in me.links().where('campaign_id', '=', campaign.id).get()
@@ -148,6 +150,67 @@
     });
 
 
+  -if me.links|length > 0
+    %script(src="//d3js.org/d3.v4.min.js")
+    :javascript
+      (function(){
+        var width = $('#timeline').width(),
+            height = width*0.3,
+            padding = 20;
+
+        var parseDate = d3.timeParse("%Y-%m-%d");
+        var svg = d3.select("#timeline").append("svg")
+          .attr("width", width)
+          .attr("height", height);
+        var scale = d3.scaleTime()
+          .range([padding, width-padding]).nice();
+        var xAxis = d3.axisBottom()
+          .scale(scale)
+          .tickValues(scale.ticks(5).concat(scale.domain()))
+          .tickFormat(d3.timeFormat('%-m/%-d'));
+        
+        svg.append('g')
+          .attr('class', 'x axis')
+          .call(xAxis)
+          .attr('transform', 'translate(0,'+(height-padding)+')');
+
+
+        var updateChart = function(){
+          d3.csv("/c/#{campaign.id}/timeline.csv", function(data){
+            scale.domain([parseDate(data[0].created_at), d3.max(data, function(d){ return parseDate(d.clicked_at); })]);
+            var domainDays = (scale.domain()[1] - scale.domain()[0])/(1000*60*60*24);
+            xAxis
+              .scale(scale)
+              .tickValues(scale.ticks(Math.min(domainDays, 5)).concat(scale.domain()));
+            svg.select('.x.axis').call(xAxis);
+
+            var linkArc = function(d) {
+              var sx = scale(parseDate(d.created_at));
+              var tx = scale(parseDate(d.clicked_at));
+
+
+              if (tx-sx < Number.EPSILON) tx += width/50;
+              
+
+              var dx = tx - sx,
+                  dr = Math.sqrt(dx * dx)/(1.25+(.75/Math.pow(dx, 0.1)));
+              return "M"+sx+",0"+ "A"+dr+","+dr+" 0 0,1 "+tx+",0";
+            }
+
+
+            svg.selectAll('.click-arc')
+              .data(data)
+              .enter().append('svg:path')
+                .attr("d", linkArc)
+                .style("stroke-width", function(d){ return Math.pow(d.count, 0.75); })
+                .style("opacity", function(d){ return 1/Math.pow(d.count, 0.25); })
+                .attr('class', 'click-arc')
+                .attr('transform', 'translate(0,'+(height-padding)+')')
+          });
+        };
+        updateChart();
+        setInterval(updateChart, 5000);
+      })();
   -if me.IsAdminFor(campaign)
     :javascript
       $('#post-update').on('submit', function(e) { e.stopPropagation();

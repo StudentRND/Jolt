@@ -12,6 +12,7 @@
         %label(for="password") Password
         %input(type="password" name="password" placeholder="********" required)
 
+      %input(type="hidden" name="redirect" value="#{redirect}")
       %input(type="submit" value="Login")
       #{csrf_field()}
   .register
@@ -29,5 +30,6 @@
         %label(for="password") Password
         %input(type="password" name="password" placeholder="*********" required)
 
+      %input(type="hidden" name="redirect" value="#{redirect}")
       %input(type="submit" value="Register")
       #{csrf_field()}

@@ -23,7 +23,9 @@ class WelcomeController extends Controller
         if (Models\User::IsLoggedIn()) {
             return \redirect('/dash');
         }
-        return \View::make("login");
+        $redirect = parse_url(\URL::previous(), PHP_URL_PATH);
+        if ($redirect === '/login') $redirect = null;
+        return \View::make("login", ['redirect' => $redirect]);
     }
 
     public function postLogin(Request $request)
@@ -36,7 +38,7 @@ class WelcomeController extends Controller
             throw new Exceptions\UserInput("I couldn't find a user with that username and password.");
         } else {
             Models\User::where('username', '=', $request->input('username'))->first()->Login();
-            return \redirect('/dash');
+            return \redirect($request->input('redirect')??'/dash');
         }
     }
 
@@ -54,7 +56,7 @@ class WelcomeController extends Controller
 
         $user->Login();
 
-        return \redirect('/dash');
+        return \redirect($request->input('redirect')??'/dash');
     }
 
     public function getLogout()
