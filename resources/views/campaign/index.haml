@@ -32,10 +32,17 @@
             %a(href="/c/#{campaign.id}/share/email" target="_blank") Send an Email
 
     -if me.links|length > 0
-      .graphs
-        %h4 Link Clicks Arcs: Time Created to Clicked
-        #timeline
+      -if me.clicks().where('campaign_id', '=', "#{campaign.id}").count() > 10
+        .graphs
+          %h4 Link Clicks Arcs: Time Created to Clicked
+          #timeline
+      %h3 All My Links
       %table.links
+        %thead
+          %tr
+            %th Description
+            %th Link
+            %th Clicks
         %tbody
           -for link in me.links().where('campaign_id', '=', campaign.id).get()
             %tr
@@ -49,6 +56,9 @@
                 %input(type="text" value="#{link.url}" readonly)
               %td #{link.clicks().count()}
   .global
+    %p
+      Here's how this works: create tracking links to promote our cause and earn points for each unique click on your
+      link. See your overall standing below.
     %h3 Leaderboard
     .leaderboard
       %ol#leaderboard

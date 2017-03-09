@@ -47,7 +47,7 @@ class Link extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->id = strtolower(implode('-', [str_random(3), str_random(3), str_random(3)]));
+            $model->id = strtolower(str_random(6));
         });
     }
 }

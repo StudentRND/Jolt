@@ -59,15 +59,16 @@ body.campaign
       width: 100%
       &, input
         font-size: $f0
-      td
+      td, th
         padding: 0.5rem 1rem
-      td:first-child
+        text-align: left
+      td:first-child, th:first-child
         +grid-column(5)
-      td:nth-child(2)
+      td:nth-child(2), th:nth-child(2)
         +grid-column(6)
         input
           width: 100%
-      td:last-child
+      td:last-child, th:last-child
         +grid-column(1)
       td:first-child span
         &:before
@@ -84,11 +85,21 @@ body.campaign
 
     .leaderboard
       ol#leaderboard
+        text-align: left
         .clicks
           &:before
             content: " - "
           &:after
             content: " clicks"
+        li:nth-child(1), li:nth-child(2), li:nth-child(3)
+          color: $color-accent
+        li:first-child
+          font-weight: bold
+          font-size: $f2
+          .username:before
+            font-family: "foundation-icons"
+            content: "\f137"
+            padding-right: 0.5rem
 
     .updates
       padding: .75rem
@@ -111,6 +122,7 @@ body.campaign
               content: "-"
 
     .graphs
+      padding-top: 2rem
       text-align: center
     #timeline
       text
