@@ -9,7 +9,11 @@ class TrackingController extends Controller
 {
     public function getIndex(Request $request, Models\Link $link)
     {
-        if (!Models\Click::where('ip', '=', $request->ip())->exists() || \config('app.debug')) {
+        $ua = $request->header('User-Agent');
+        $legitimateAgents = ['Firefox', 'Seamonkey', 'Chrome', 'Chromium', 'Safari', 'Opera', 'OPR', 'MSIE', 'Edge'];
+        $isPerson = count(array_filter($legitimateAgents,
+                        function($elem) use ($ua) { return strpos($ua, $elem) !== false; })) > 0;
+        if ($isPerson && (!Models\Click::where('ip', '=', $request->ip())->exists() || \config('app.debug'))) {
             $click = new Models\Click;
             $click->link_id = $link->id;
             $click->lat = 0;

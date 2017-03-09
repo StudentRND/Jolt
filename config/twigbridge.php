@@ -3,7 +3,7 @@ return [
     'twig' => [
         'extension' => 'haml',
         'environment' => [
-            'debug' => env('APP_DEBUG', false),
+            'debug' => true,
             'charset' => 'utf-8',
             'base_template_class' => TwigBridge\Twig\Template::class,
             'cache' => null,
