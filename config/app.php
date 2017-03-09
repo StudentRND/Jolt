@@ -12,6 +12,8 @@ return [
     'cipher' => 'AES-256-CBC',
     'log' => env('APP_LOG', 'single'),
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
+    'link_domain' => env('APP_LINK_DOMAIN', 'x.localhost'),
+    'enabled_link_domains' => explode(',', env('APP_ENABLED_LINK_DOMAINS', 'x.localhost')),
 
     'providers' => [
         Illuminate\Broadcasting\BroadcastServiceProvider::class,

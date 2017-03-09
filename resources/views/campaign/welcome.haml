@@ -1,0 +1,13 @@
+- extends "template.haml"
+- block section "campaign welcome"
+- block content
+  .welcome
+    %h2 Welcome
+    -if campaign.welcome
+      %p #{campaign.welcome|nl2br}
+    -else
+      %p Thanks for helping us promote #{campaign.name}! We're able to continue making a difference through the support
+         of volunteers like you!
+  .how
+    %h2 How This Works
+    %p Jolt is a tool to help you effectively promote our cause.

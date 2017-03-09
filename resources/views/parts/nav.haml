@@ -1,8 +1,9 @@
-- if not me
+-if not me
   %li
     %a(href="/login") Login
-- else
-  %li
-    %a(href="/dash") My Campaigns
+-else
+  -if me.is_superadmin
+    %li
+      %a(href="/admin") Site Admin
   %li
     %a(href="/logout") Logout

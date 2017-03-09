@@ -33,6 +33,7 @@ class Model extends \Eloquent
         parent::boot();
 
         $validateModelOrFail = function($model) {
+            if (!isset($model->rules) || count($model->rules) === 0) return;
             if (!$model->Validate()) {
                 throw new Exceptions\ModelValidation($model->ValidationErrors());
             }

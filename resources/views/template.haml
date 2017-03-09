@@ -3,20 +3,42 @@
   %head
     %title= "⚡⚡ #{block('title')}"
     %link(rel="stylesheet" href="/assets/css/style.css?v=#{version}")
+
   %body(class="#{block('section')}")
     - if session_has('error')
       .error #{session_get('error')|nl2br}
+
     %header
       %h1
         %a(href="/")= "Jolt"
       %nav
         %ul
           - include('parts/nav.haml')
+
     .content #{block('content')}
+
     %footer
       %p
         &copy; 2014-2017 
         %a(href="https://srnd.org/")> StudentRND
+
     %script(src="https://use.typekit.net/lqy0tsq.js")
     :javascript
       try{Typekit.load({ async: true });}catch(e){}
+    %script(src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js")
+    :javascript
+      var tabs = $('.tabs ul.headings li');
+
+      tabs.each(function(i, tab) {
+        $(tab).on('click', function(){
+          var contentPane = tab.className.split(/\s+/)[0];
+
+          var areas = $('.tabs ul.headings li, .tabs .content > div');
+          areas.each(function(j, a) {
+            $(a).removeClass('active');
+          });
+          $('.'+contentPane).addClass('active');
+        });
+      });
+
+    #{block('scripts')}

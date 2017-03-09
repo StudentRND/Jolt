@@ -1,0 +1,43 @@
+- extends "template.haml"
+- block section "campaign edit"
+- block content
+  - if campaign
+    %h2 Editing #{campaign.name}
+    %p
+      %a(href="/c/#{campaign.id}") Back to campaign
+  - else
+    %h2 New Campaign
+  %form(method="post")
+    -if campaign
+      .field
+        %label(for="invite") Invite Code
+        %input(type="text" id="invite" value="#{campaign.invite}" readonly)
+    .field
+      %label(for="name") Name
+      %input(type="text" name="name" id="name" value="#{campaign.name}" placeholder="CodeDay Seattle 17-WNTR" required)
+    .field
+      %label(for="url") URL
+      %input(type="url" name="url" id="url" value="#{campaign.url}" placeholder="https://zombo.com/" required)
+    .field
+      %label(for="domain") Domain
+      %input(type="text" name="domain" id="domain" value="#{campaign.domain}" placeholder="x.zombo.com")
+    .field
+      %label(for="starts_at") Start Date
+      %input(type="text" name="starts_at" id="starts_at" value="#{campaign.starts_at.format('Y-m-d')}" placeholder="2017-11-31" required)
+    .field
+      %label(for="ends_at") End Date
+      %input(type="text" name="ends_at" id="ends_at" value="#{campaign.ends_at.format('Y-m-d')}" placeholder="2017-12-31" required)
+    .field
+      %label(for="default_social_media") Post Template
+      %textarea(name="default_social_media" id="default_social_media" placeholder="I'm donating to this event, and you should too!")= "#{campaign.default_social_media}"
+    .field
+      %label(for="default_email_subject") Email Subject
+      %input(type="text" name="default_email_subject" id="default_email_subject" placeholder="Donation" value="#{campaign.default_email_subject}")
+    .field
+      %label(for="default_email") Email Template
+      %textarea(name="default_email" id="default_email" placeholder="Have you considered donating? [link]")= "#{campaign.default_email}"
+    -if campaign
+      %input(type="submit" value="Save")
+    -else
+      %input(type="submit" value="Create")
+    #{csrf_field()}

@@ -1,0 +1,111 @@
+body.campaign
+  &.index
+    .mine
+      +grid-column(8)
+    .global
+      +grid-column(4)
+    
+    .sharer
+      .tab-email
+        form
+          text-align: right
+          input[type="text"]
+            width: 100%
+            text-align: left
+          textarea
+            width: 100%
+            height: 10rem
+            text-align: left
+          a
+            @extend %button
+        p
+          text-align: center
+          font-size: $f0
+      .tab-social
+        ul
+          padding: 0
+          li
+            list-style-type: none
+            a
+              &:before
+                font-family: "foundation-icons"
+                padding-right: 0.5rem
+                text-decoration: none
+              &.twitter:before
+                content: "\f1e4"
+              &.facebook:before
+                content: "\f1c4"
+      .tab-custom
+        form
+          +grid-container
+          input[type="text"]
+            +grid-column(8)
+          input[type="submit"]
+            +grid-column(4)
+        table
+          width: 100%
+          margin-top: 1rem
+          &, input
+            font-size: $f0
+          td
+            &:first-child
+              width: 33%
+            &:last-child
+              width: 67%
+            input
+              width: 100%
+
+    .mine table.links
+      width: 100%
+      &, input
+        font-size: $f0
+      td
+        padding: 0.5rem 1rem
+      td:first-child
+        +grid-column(5)
+      td:nth-child(2)
+        +grid-column(6)
+        input
+          width: 100%
+      td:last-child
+        +grid-column(1)
+      td:first-child span
+        &:before
+          font-family: "foundation-icons"
+          font-size: $f1
+        &.twitter:before
+          content: "\f1e4"
+        &.facebook:before
+          content: "\f1c4"
+        &.email:before
+          content: "\f16d"
+        &.custom:before
+          content: "\f165"
+
+    .leaderboard
+      ol#leaderboard
+        .clicks
+          &:before
+            content: " - "
+          &:after
+            content: " clicks"
+
+    .updates
+      padding: .75rem
+      ul#updates
+        width: 100%
+        height: 20rem
+        padding: 0
+        margin: 0
+        overflow-y: auto
+        li
+          list-style-type: none
+          padding-bottom: 2rem
+          .text
+            display: block
+          .author
+            display: block
+            font-size: $f0
+            color: $color-foreground-dark
+            &:before
+              content: "-"

@@ -1,0 +1,34 @@
+form
+  text-align: center
+  .field
+    +grid-container
+    padding-bottom: 0.5rem
+    text-align: left
+    label
+      +grid-column(3)
+      text-align: right
+    input:not([type="submit"]), textarea
+      +grid-column(9)
+
+input:not([type="submit"]), textarea
+  background-color: $color-background
+  color: $color-foreground
+  font-family: $font-family
+  color: $color-foreground
+  border: none
+  border-bottom: 1px solid $color-foreground-dark
+  &::-webkit-input-placeholder
+    color: $color-foreground-dark
+
+  &:-moz-placeholder
+    color: $color-foreground-dark
+    opacity: 1
+
+  &::-moz-placeholder
+    color: $color-foreground-dark
+    opacity: 1
+
+  &:-ms-input-placeholder
+    color: $color-foreground-dark
+input[type="submit"]
+  @extend %button

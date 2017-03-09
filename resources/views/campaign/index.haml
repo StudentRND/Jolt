@@ -1,0 +1,158 @@
+- extends "template.haml"
+- block section "campaign index"
+- block content
+  %h2 #{campaign.name}
+  .mine
+    .sharer
+      .tabs
+        %ul.headings
+          %li.tab-custom.active> Custom Link
+          %li.tab-social> Post to Social Media
+          %li.tab-email> Send an Email
+        .content
+          .tab-custom.active
+            %form(action="#" id="share-custom")
+              %input(type="text" name="description" placeholder="Where are you using this link?" maxlength="40" required)
+              %input(type="submit" value="Create link")
+            .all-links
+              %table
+                %tbody
+                  -for link in me.links().where('campaign_id', '=', campaign.id).where('type', '=', 'custom').orderBy('created_at', 'DESC').get()
+                    %tr
+                      %td #{link.description}
+                      %td
+                        %input(type="text" value="#{link.url}" readonly)
+          .tab-social
+            %ul
+              %li
+                %a(href="/c/#{campaign.id}/share/facebook" class="facebook" target="_blank") Share on Facebook
+              %li
+                %a(href="/c/#{campaign.id}/share/twitter" class="twitter" target="_blank") Share on Twitter
+          .tab-email
+            %a(href="/c/#{campaign.id}/share/email" target="_blank") Send an Email
+
+    -if me.links|length > 0
+      %h3 Link Performance
+      %table.links
+        %tbody
+          -for link in me.links().where('campaign_id', '=', campaign.id).get()
+            %tr
+              %td
+                %span(class="#{link.type}")
+                -if link.description
+                  #{link.description}
+                -else
+                  Sent on #{link.created_at.format('F j, Y')}
+              %td
+                %input(type="text" value="#{link.url}" readonly)
+              %td #{link.clicks().count()}
+  .global
+    %h3 Leaderboard
+    .leaderboard
+      %ol#leaderboard
+    %h3 Updates
+    .updates
+      %ul#updates
+      -if me.IsAdminFor(campaign)
+        %form(action="#" id="post-update")
+          %input(type="text" name="text" value="" placeholder="Send a new message" autocomplete="off")
+          %input(type="submit" value="Send")
+    -if me.IsAdminFor(campaign)
+      %h3 Admin Functions
+      %form(action="#" id="opdeop")
+        %input(type="text" name="username" placeholder="Username")
+        %input(type="submit" value="Op/Deop")
+      %p
+        %a(href="/c/#{campaign.id}/edit") Edit Settings
+
+-block scripts
+  :javascript
+    // API Library
+    var api = {
+      // Request Helpers
+      _base: '/c/#{campaign.id}',
+      _csrfToken: '#{csrf_token()}',
+      _makeUrl: function(endpoint) { return this._base+'/'+endpoint; },
+      get: function(endpoint, callback) { return $.getJSON(this._makeUrl(endpoint), callback);},
+      post: function(endpoint, data, callback) {
+        data._token = this._csrfToken;
+        return $.post(this._makeUrl(endpoint), data, function(x){callback($.parseJSON(x))});
+      },
+
+      // Event Bindings
+      _onUpdateCallbacks: [],
+      onUpdate: function(callback) { this._onUpdateCallbacks.push(callback); },
+      updateNow: function(){
+          var _this = api;
+          _this.get('state.json', function(data) {
+            $.each(_this._onUpdateCallbacks, function(i, callback) { callback(data); });
+          });
+      },
+      runUpdates: function() {
+        setInterval(this.updateNow, 5000);
+        this.updateNow();
+      }
+    };
+    api.runUpdates();
+
+    // Update the site if information has changed
+    var currentVersion = #{campaign.updated_at.timestamp};
+    api.onUpdate(function(data) {
+      if (data.version !== currentVersion) location.reload();
+    });
+
+    // Update the leaderboard
+    api.onUpdate(function(data) {
+      var leaderboardElem = $('<ol id="leaderboard"></ol>');
+      $.each(data.leaderboard, function(i, leader) {
+        var leaderElem = $('<li><span class="username"></span><span class="clicks"></span></li>');
+        leaderElem.find('.username').text(leader.username);
+        leaderElem.find('.clicks').text(leader.clicks);
+        leaderboardElem.append(leaderElem);
+      });
+      $('#leaderboard').replaceWith(leaderboardElem);
+    });
+
+    // Update the messages
+    api.onUpdate(function(data) {
+      var updatesElem = $('<ul id="updates"></ul>');
+      $.each(data.updates, function(i, update) {
+        var updateElem = $('<li><span class="text"></span><span class="author"></span></li>');
+        updateElem.find('.text').text(update.text);
+        updateElem.find('.author').text(update.author);
+        updatesElem.append(updateElem);
+      });
+      $('#updates').replaceWith(updatesElem);
+    });
+
+    // Forms
+    $('form#share-custom').on('submit', function(e) { e.stopPropagation();
+      var description = $(this).find('input[name="description"]').val();
+      api.post('share/custom', {description: description}, function(data) {
+        var newRow = $('<tr><td></td><td><input readonly></td></tr>');
+        newRow.find('td').first().text(data.description);
+        newRow.find('td input').val(data.url);
+
+        $('.tab-custom table tbody').prepend(newRow);
+      });
+      return false;
+    });
+
+    $('form#opdeop').on('submit', function(e) { e.stopPropagation();
+      var input = $('form#opdeop input[name="username"]');
+      api.post('op/'+input.val(), {}, function(data) {
+        alert(data.is_admin);
+        input.val('');
+      });
+      return false;
+    });
+
+
+  -if me.IsAdminFor(campaign)
+    :javascript
+      $('#post-update').on('submit', function(e) { e.stopPropagation();
+        var text = $(this).find('input[name="text"]');
+        api.post('update', {text: text.val()}, function(data) {api.updateNow();});
+        text.val('');
+        return false;
+      });

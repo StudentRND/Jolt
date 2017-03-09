@@ -1,3 +1,14 @@
+@font-face 
+  font-family: "foundation-icons"
+  src: url("/assets/fonts/foundation-icons/foundation-icons.eot")
+  src: url("/assets/fonts/foundation-icons/foundation-icons.eot?#iefix") format("embedded-opentype"), url("/assets/fonts/foundation-icons/foundation-icons.woff") format("woff"), url("/assets/fonts/foundation-icons/foundation-icons.ttf") format("truetype"), url("/assets/fonts/foundation-icons/foundation-icons.svg#fontcustom") format("svg")
+  font-weight: normal
+  font-style: normal
+  
+html
+  *
+    -moz-box-sizing: border-box
+    box-sizing: border-box
 body
   font:
     family: $font-family
@@ -32,39 +43,10 @@ body
 
   h3
     font-size: $f2
+    margin-top: 4rem
+    &:first-child
+      margin-top: 0
 
-  form
-    text-align: center
-    .field
-      +grid-container
-      padding-bottom: 0.5rem
-      text-align: left
-      label
-        +grid-column(3)
-        text-align: right
-      input:not([type="submit"]), textarea
-        +grid-column(9)
-        background-color: $color-background
-        color: $color-foreground
-        font-family: $font-family
-        color: $color-foreground
-        border: none
-        border-bottom: 1px solid $color-foreground-dark
-        &::-webkit-input-placeholder
-          color: $color-foreground-dark
-
-        &:-moz-placeholder
-          color: $color-foreground-dark
-          opacity: 1
-
-        &::-moz-placeholder
-          color: $color-foreground-dark
-          opacity: 1
-
-        &:-ms-input-placeholder
-          color: $color-foreground-dark
-    input[type="submit"]
-      @extend %button
 
   header
     margin-bottom: 2rem

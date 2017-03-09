@@ -1,0 +1,20 @@
+-extends "template.haml"
+-block section "admin index"
+-block content
+  %h2 Site Admin
+
+  %h3 Campaigns
+  %ul.campaigns
+    -for campaign in campaigns
+      %li
+        %a(href="/c/#{campaign.id}/edit")
+          #{campaign.name}
+          (#{campaign.starts_at.format('Y-m-d')} through #{campaign.ends_at.format('Y-m-d')})
+    %li
+      %a(href="/admin/new") *New
+
+  %h3 Users
+  %ul.users
+    -for user in users
+      %li
+        %a(href="/admin/u/#{user.id}") #{user.username}

@@ -48,6 +48,14 @@ class Handler extends ExceptionHandler
             \Session::flash('error', $exception->getMessage());
             return redirect()->back();
         }
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException && $exception->getStatusCode() === 401) {
+            \Session::flash('error', 'You need to login first.');
+            return redirect('/login');
+        }
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException && $exception->getStatusCode() === 403) {
+            \Session::flash('error', 'You don\'t have permission to access that.');
+            return redirect('/');
+        }
         return parent::render($request, $exception);
     }
 

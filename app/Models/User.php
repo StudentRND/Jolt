@@ -14,6 +14,23 @@ class User extends Model
     ];
 
     /////////////////////////
+    // Relations
+    /////////////////////////
+    public function campaigns() { return $this->belongsToMany(Campaign::class); }
+    public function links() { return $this->hasMany(Link::class); }
+
+    /////////////////////////
+    // Functions
+    /////////////////////////
+
+    public function IsAdminFor(Campaign $campaign)
+    {
+        $pivot = $this->campaigns()->where('campaign_id', '=', $campaign->id)->withPivot('is_admin')->first()->pivot;
+
+        return $this->is_superadmin || (isset($pivot) && $pivot->is_admin);
+    }
+
+    /////////////////////////
     // Login
     /////////////////////////
     public static function IsLoggedIn()
@@ -26,10 +43,13 @@ class User extends Model
      */
     public static function Me()
     {
-        $me = self::where('id', '=', \request()->session()->get('me'))->first();
-        if ($me) return $me;
-        else \abort(403);
+        if (!isset(self::$_me)) {
+            self::$_me = self::where('id', '=', \request()->session()->get('me'))->first();
+            if (!isset(self::$_me)) \abort(403);
+        }
+        return self::$_me;
     }
+    private static $_me = null;
 
     /**
      * Logs the user in for the current session.

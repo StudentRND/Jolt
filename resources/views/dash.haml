@@ -1,0 +1,9 @@
+-extends "template.haml"
+-block section "dashboard"
+-block content
+  %h2 My Campaigns
+  %ul
+    -for campaign in me.campaigns
+      -if (campaign.starts_at.timestamp < null|date('U') and campaign.ends_at.timestamp > null|date('U')) or campaign.pivot.is_admin
+        %li
+          %a(href="/c/#{campaign.id}") #{campaign.name}

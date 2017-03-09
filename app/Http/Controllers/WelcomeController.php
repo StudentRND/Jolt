@@ -9,7 +9,13 @@ class WelcomeController extends Controller
 {
     public function getIndex()
     {
+        if (Models\User::IsLoggedIn()) return \redirect('/dash');
         return \View::make("welcome");
+    }
+
+    public function getDash()
+    {
+        return \View::make("dash");
     }
 
     public function getLogin()

@@ -26,7 +26,9 @@ class InitialTables extends Migration
             $table->increments('id');
             $table->string('invite');
             $table->string('name');
-            $table->text('welcome')->nullable();
+            $table->text('default_social_media')->nullable();
+            $table->text('default_email')->nullable();
+            $table->text('default_email_subject')->nullable();
             $table->string('url');
             $table->string('domain')->nullable();
             $table->datetime('starts_at');
@@ -34,7 +36,7 @@ class InitialTables extends Migration
             $table->timestamps();
         });
 
-        \Schema::create('campaigns_updates', function(Blueprint $table) {
+        \Schema::create('campaign_updates', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('campaign_id')->unsigned();
             $table->integer('user_id')->unsigned();
@@ -42,7 +44,7 @@ class InitialTables extends Migration
             $table->timestamps();
         });
 
-        \Schema::create('users_campaigns', function(Blueprint $table) {
+        \Schema::create('campaign_user', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('campaign_id')->unsigned();
@@ -54,17 +56,19 @@ class InitialTables extends Migration
             $table->string('id');
             $table->integer('campaign_id')->unsigned();
             $table->integer('user_id')->unsigned();
-            $table->enum('type', ['twitter', 'facebook', 'linkedin', 'instagram', 'reddit', 'tumblr', 'email', 'other']);
-            $table->string('description');
-            $table->string('url');
+            $table->enum('type', ['twitter', 'facebook', 'fbmessenger', 'linkedin', 'instagram', 'reddit', 'tumblr', 'email', 'custom']);
+            $table->string('description')->nullable();
+            $table->string('url')->nullable();
+            $table->string('is_hidden')->nullable();
             $table->timestamps();
         });
 
-        \Schema::create('links_clicks', function(Blueprint $table) {
+        \Schema::create('link_clicks', function(Blueprint $table) {
             $table->increments('id');
             $table->string('link_id');
             $table->string('lat');
             $table->string('lng');
+            $table->string('ip');
             $table->timestamps();
         });
     }
@@ -76,10 +80,10 @@ class InitialTables extends Migration
      */
     public function down()
     {
-        \Schema::drop('links_clicks');
+        \Schema::drop('link_clicks');
         \Schema::drop('links');
-        \Schema::drop('users_campaigns');
-        \Schema::drop('campaigns_updates');
+        \Schema::drop('campaign_user');
+        \Schema::drop('campaign_updates');
         \Schema::drop('campaigns');
         \Schema::drop('users');
     }

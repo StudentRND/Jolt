@@ -1,0 +1,29 @@
+.tabs
+  ul.headings
+    padding: 0
+    margin-bottom: -1px
+    li
+      list-style-type: none
+      display: inline-block
+      padding: 0.25rem 0.5rem
+      cursor: pointer
+
+      border: 1px solid $color-foreground-dark
+      border-bottom-color: transparent
+      color: $color-foreground-dark
+
+      &.active
+        color: $color-foreground
+        border-color: $color-foreground
+        border-bottom-color: $color-background
+
+      &:not(:first-child)
+        border-left: none
+
+  .content > div
+    margin-top: 0
+    padding: 1rem
+    border: 1px solid $color-foreground
+    display: none
+    &.active
+      display: block
