@@ -200,6 +200,7 @@
 
 
               if (tx-sx < Number.EPSILON) tx += width/50;
+              if (tx-(width-padding) > 0) { sx -= width/50; tx -= width/50; }
               
 
               var dx = tx - sx,

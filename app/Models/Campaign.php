@@ -32,6 +32,7 @@ class Campaign extends Model
             ::selectRaw('users.username, COUNT(link_clicks.id) as clicks')
             ->join('links', 'links.user_id', '=', 'users.id')
             ->join('link_clicks', 'link_clicks.link_id', '=', 'links.id')
+            ->where('links.campaign_id', '=', $this->id)
             ->orderBy('clicks', 'DESC')
             ->groupBy('users.username')
             ->get();
