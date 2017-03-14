@@ -93,6 +93,8 @@ class CampaignController extends Controller
                 return \redirect("https://www.facebook.com/sharer/sharer.php?s=100&u=$url");
             case "twitter":
                 return \redirect("http://twitter.com/share?text=$message&url=$url");
+            case "linkedin":
+                return \redirect("https://www.linkedin.com/cws/share?url=$url");
             default:
                 $link->delete();
                 \abort(404);
