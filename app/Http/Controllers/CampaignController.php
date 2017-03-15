@@ -57,7 +57,7 @@ class CampaignController extends Controller
 
     public function getClicksTimeline()
     {
-        $clicks = \DB::select('select DATE(link_clicks.created_at) as clicked_at, DATE(links.created_at) as created_at, COUNT(*) as count FROM link_clicks LEFT JOIN links ON (links.id = link_clicks.link_id) WHERE links.user_id = ? GROUP BY clicked_at, created_at', [Models\User::Me()->id]);
+        $clicks = \DB::select('select DATE(link_clicks.created_at) as clicked_at, DATE(links.created_at) as created_at, COUNT(*) as count FROM link_clicks LEFT JOIN links ON (links.id = link_clicks.link_id) WHERE links.user_id = ? AND links.campaign_id = ? GROUP BY clicked_at, created_at', [Models\User::Me()->id, $this->campaign->id]);
 
         return "created_at,clicked_at,count\n"
             .implode("\n", array_map(function($log){
