@@ -18,13 +18,15 @@ class WelcomeController extends Controller
         return \View::make("dash");
     }
 
-    public function getLogin()
+    public function getLogin(Request $request)
     {
         if (Models\User::IsLoggedIn()) {
             return \redirect('/dash');
         }
         $redirect = parse_url(\URL::previous(), PHP_URL_PATH);
         if ($redirect === '/login') $redirect = null;
+        if (!isset($redirect) && $request->session()->has('redirect')) $redirect = $request->session()->get('redirect');
+        if (isset($redirect)) $request->session()->put('redirect', $redirect);
         return \View::make("login", ['redirect' => $redirect]);
     }
 

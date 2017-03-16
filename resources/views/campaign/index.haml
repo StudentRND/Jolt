@@ -6,23 +6,11 @@
     .sharer
       .tabs
         %ul.headings
-          %li.tab-custom.active> Custom Link
-          %li.tab-social> Post to Social Media
+          %li.tab-social.active> Post to Social Media
           %li.tab-email> Send an Email
+          %li.tab-custom> Post Somewhere Else
         .content
-          .tab-custom.active
-            %form(action="#" id="share-custom")
-              %input(type="text" name="description" placeholder="Where are you using this link?" maxlength="40" required)
-              %input(type="submit" value="Create link")
-            .all-links
-              %table
-                %tbody
-                  -for link in me.links().where('campaign_id', '=', campaign.id).where('type', '=', 'custom').orderBy('created_at', 'DESC').get()
-                    %tr
-                      %td #{link.description}
-                      %td
-                        %input(type="text" value="#{link.url}" readonly)
-          .tab-social
+          .tab-social.active
             %ul
               %li
                 %a(href="/c/#{campaign.id}/share/facebook" class="facebook" target="_blank") Share on Facebook
@@ -32,6 +20,18 @@
                 %a(href="/c/#{campaign.id}/share/linkedin" class="linkedin" target="_blank") Share on LinkedIn
           .tab-email
             %a(href="/c/#{campaign.id}/share/email" target="_blank") Send an Email
+          .tab-custom
+            %form(action="#" id="share-custom")
+              %input(type="text" name="description" placeholder="Where will you post this? (For your own reference, e.g. Meetup.)" maxlength="40" required)
+              %input(type="submit" value="Create link")
+            .all-links
+              %table
+                %tbody
+                  -for link in me.links().where('campaign_id', '=', campaign.id).where('type', '=', 'custom').orderBy('created_at', 'DESC').get()
+                    %tr
+                      %td #{link.description}
+                      %td
+                        %input(type="text" value="#{link.url}" readonly)
 
     -if me.links|length > 0
       -if me.clicks().where('campaign_id', '=', "#{campaign.id}").count() > 10

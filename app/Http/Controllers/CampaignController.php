@@ -88,6 +88,8 @@ class CampaignController extends Controller
 
         switch ($site) {
             case "email":
+                $subject = str_replace('+', '%20', $subject);
+                $message = str_replace('+', '%20', $message);
                 return \redirect("mailto:?to=&subject=$subject&body=$message");
             case "facebook":
                 return \redirect("https://www.facebook.com/sharer/sharer.php?s=100&u=$url");
