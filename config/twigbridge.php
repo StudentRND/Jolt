@@ -33,6 +33,7 @@ return [
             TwigBridge\Extension\Laravel\Translator::class,
             TwigBridge\Extension\Laravel\Url::class,
             MtHaml\Support\Twig\Extension::class,
+            \DPolac\TwigLambda\LambdaExtension::class,
         ],
 
         'facades' => [],

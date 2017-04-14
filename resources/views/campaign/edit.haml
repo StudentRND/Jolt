@@ -41,3 +41,9 @@
     -else
       %input(type="submit" value="Create")
     #{csrf_field()}
+  - if campaign
+    %h2= "All Users"
+    %form
+      .field
+        %label(for="users") Emails
+        %textarea#users(rows=10)= "#{campaign.users|map(=> _.email)|join(', ')}"
