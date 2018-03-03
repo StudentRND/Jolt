@@ -41,7 +41,7 @@ class Campaign extends Model
             $q
                 ->join('campaign_user', 'campaign_user.user_id', '=', 'users.id')
                 ->where('campaign_user.is_admin', '=', false)
-                ->where('user.is_superadmin', '=', false);
+                ->where('users.is_superadmin', '=', false);
 
         return $q->get();
     }
