@@ -50,7 +50,7 @@
       %input(type="text" name="accent_color" id="accent_color" value="#{campaign.accent_color}" placeholder="#c00")
     .field
       %label(for="font") Fonts
-      %input(type="text" name="font" id="font" value="#{campaign.font}" placeholder="Arial,sans-serif")
+      %input(type="text" name="font" id="font" value="#{campaign.font|escape('html_attr')}" placeholder="Arial,sans-serif")
     -if campaign
       %input(type="submit" value="Save")
     -else
