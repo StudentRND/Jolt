@@ -3,6 +3,9 @@
 - block content
   %h2 #{campaign.name}
   .mine
+    %p
+      Here's how this works: create tracking links to promote our cause and earn points for each unique click on your
+      link. See your overall standing below.
     .sharer
       .tabs
         %ul.headings
@@ -36,9 +39,9 @@
     -if me.links|length > 0
       -if me.clicks().where('campaign_id', '=', "#{campaign.id}").count() > 10
         .graphs
-          %h4 Link Clicks Arcs: Time Created to Clicked
+          %h4 How Your Early Promotion Paid-Off
           #timeline
-      %h3 All My Links
+      %h3 All Your Links
       %table.links
         %thead
           %tr
@@ -58,9 +61,9 @@
                 %input(type="text" value="#{link.url}" readonly)
               %td #{link.clicks().count()}
   .global
-    %p
-      Here's how this works: create tracking links to promote our cause and earn points for each unique click on your
-      link. See your overall standing below.
+    -if campaign.ends_at.isFuture
+      %h3#countdown
+      %p Time Left
     %h3 Leaderboard
     .leaderboard
       %ol#leaderboard
@@ -79,6 +82,60 @@
       %p
         %a(href="/c/#{campaign.id}/edit") Edit Settings
 
+  -if campaign.foreground_color
+    :css
+      body, body a {
+        color: #{campaign.foreground_color};
+      }
+  -if campaign.background_color
+    :css
+      header nav a {
+        color: #{campaign.background_color};
+      }
+      body {
+        background-color: #{campaign.background_color};
+      }
+
+  -if campaign.accent_color
+    :css
+      input[type="submit"] {
+        background-color: #{campaign.accent_color} !important;
+        border-color: #{campaign.accent_color} !important;
+        color: #fff !important;
+      }
+      input[type="text"] {
+        border: 1px solid #{campaign.accent_color} !important;
+      }
+      header {
+        background-color: #{campaign.accent_color};
+        padding: 0 1rem 1rem;
+      }
+      header nav {
+        padding-top: 0.75rem;
+      }
+      #timeline {
+        background-color: #{campaign.accent_color};
+      }
+      .tabs ul.headings li {
+        border-color: #{campaign.accent_color};
+        border-bottom-width: 0;
+        color: #{campaign.accent_color};
+      }
+      .tabs ul.headings li.active {
+        background-color: #{campaign.accent_color};
+      }
+      .tabs .content > div {
+        border-color: #{campaign.accent_color};
+      }
+      input[type="text"] {
+        background-color: transparent;
+        color: #{campaign.foreground_color};
+      }
+  -if campaign.font
+    :css
+      p, a, li, blockquote, div, span, h1, h2, h3, h4, h5, h6, input {
+        font-family: 'SegoeUILight', 'Alef', Tahoma, Verdana, Arial !important;
+      }
 -block scripts
   :javascript
     // API Library
@@ -160,6 +217,27 @@
       });
       return false;
     });
+
+  -if campaign.ends_at.isFuture
+    :javascript
+      var endsAt = Date.parse('#{campaign.ends_at.timestamp|date('c')|escape('js')}');
+      setInterval(function(){
+        var delta = (endsAt - (new Date()))/1000;
+        var days = Math.floor(delta / 86400);
+        delta -= days * 86400;
+
+        var hours = Math.floor(delta / 3600) % 24;
+        delta -= hours * 3600;
+
+        var minutes = Math.floor(delta / 60) % 60;
+        delta -= minutes * 60;
+
+        var seconds = Math.floor(delta % 60);
+        delta -= seconds;
+
+        var millis = (delta).toFixed(2);
+        $("#countdown").text(days+':'+hours.toString().padStart(2, '0')+':'+minutes.toString().padStart(2, '0')+':'+seconds.toString().padStart(2, '0')+'.'+millis.toString().substring(2));
+      }, 50);
 
 
   -if me.links|length > 0

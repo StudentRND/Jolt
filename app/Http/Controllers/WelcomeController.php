@@ -61,6 +61,36 @@ class WelcomeController extends Controller
         return \redirect($request->input('redirect')??'/dash');
     }
 
+    public function getForgot(Request $request)
+    {
+        if ($request->jwt) {
+            $user = Models\User::FromJwt($request->jwt, 'reset');
+            if ($user) {
+                $user->Login();
+                return \redirect('/dash');
+            }
+        }
+
+        return \View::make("forgot");
+    }
+
+    public function postForgot(Request $request)
+    {
+        $user = Models\User::where('username', '=', $request->lookup)->orWhere('email', '=', $request->lookup)->first();
+        if ($user) {
+            $jwt = $user->MintJwt('reset');
+
+            \Mail::send('emails/reset', ['user' => $user, 'reset' => url('/forgot?jwt='.$jwt)], function ($m) use ($user) {
+                $m->from('jolt@srnd.org', 'Jolt');
+                $m->to($user->email, $user->username)->subject('Password Reset');
+            });
+
+            $emailHint = substr($user->email, 0, 1).'***@'.substr($user->email, strpos($user->email, '@')+1, 2).'**.***';
+            throw new Exceptions\UserInput("Success! Your password reset link has been emailed to $emailHint");
+        }
+        throw new Exceptions\UserInput("Couldn't find anyone with that username/password.");
+    }
+
     public function getLogout()
     {
         Models\User::Me()->Logout();

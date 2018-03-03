@@ -18,6 +18,8 @@ foreach (\config('app.enabled_link_domains') as $domain) {
 \Route::get('/login', 'WelcomeController@getLogin');
 \Route::post('/login', 'WelcomeController@postLogin');
 \Route::post('/register', 'WelcomeController@postRegister');
+\Route::get('/forgot', 'WelcomeController@getForgot');
+\Route::post('/forgot', 'WelcomeController@postForgot');
 
 \Route::group(['middleware' => 'auth'], function() {
     \Route::get('/logout', 'WelcomeController@getLogout');

@@ -143,6 +143,11 @@ class CampaignController extends Controller
         $this->campaign->domain = $request->domain??null;
         $this->campaign->starts_at = $request->starts_at;
         $this->campaign->ends_at = $request->ends_at;
+        $this->campaign->foreground_color = $request->foreground_color;
+        $this->campaign->background_color = $request->background_color;
+        $this->campaign->accent_color = $request->accent_color;
+        $this->campaign->font = $request->font;
+        $this->campaign->ignore_admins = boolval($request->ignore_admins);
         $this->campaign->save();
 
         return \redirect('/c/'.$this->campaign->id);

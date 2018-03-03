@@ -36,6 +36,18 @@
     .field
       %label(for="default_email") Email Template
       %textarea(name="default_email" id="default_email" placeholder="Have you considered donating? [link]")= "#{campaign.default_email}"
+    .field
+      %label(for="ignore_admins") Ignore Admins
+      %input(type="checkbox" name="ignore_admins" id="ignore_admins" value="1"){ "checked" => campaign.ignore_admins == 1}
+    .field
+      %label(for="foreground_color") Foreground Color
+      %input(type="text" name="foreground_color" id="foreground_color" value="#{campaign.foreground_color}" placeholder="#000" required)
+    .field
+      %label(for="background_color") Background Color
+      %input(type="text" name="background_color" id="background_color" value="#{campaign.background_color}" placeholder="#fff" required)
+    .field
+      %label(for="accent_color") Accent Color
+      %input(type="text" name="accent_color" id="accent_color" value="#{campaign.accent_color}" placeholder="#c00" required)
     -if campaign
       %input(type="submit" value="Save")
     -else

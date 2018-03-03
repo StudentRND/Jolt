@@ -68,6 +68,28 @@ class User extends Model
         \request()->session()->forget('me');
     }
 
+    public function MintJwt($aud)
+    {
+        $header = json_encode(['alg' => 'HS256', 'typ' => 'JWT']);
+        $payload = json_encode(['sub' => $this->id, 'iss' => time(), 'exp' => time() + (60*60*24), 'aud' => $aud]);
+        $data = implode('.', [self::base64UrlEncode($header), self::base64UrlEncode($payload)]);
+        $sig = hash_hmac('SHA256', $data, \config('app.key'));
+        return $data.'.'.$sig;
+    }
+
+    public static function FromJwt($jwt, $aud)
+    {
+        list($header, $payload, $sig) = explode('.', $jwt);
+        if (hash_hmac('SHA256', $header.'.'.$payload, \config('app.key')) !== $sig) return null;
+
+        $header = json_decode(self::base64UrlDecode($header));
+        $payload = json_decode(self::base64UrlDecode($payload));
+        if ($payload->aud !== $aud || $payload->iss > time() || $payload->exp < time()) return null;
+
+
+        return self::where('id', '=', $payload->sub)->first();
+    }
+
     /////////////////////////
     // Authentication
     /////////////////////////
@@ -132,4 +154,15 @@ class User extends Model
             }
         });
     }
+
+    //////////////////////
+    // Helpers
+    //////////////////////
+    private static function base64UrlEncode($data) { 
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '='); 
+    } 
+
+    private static function base64UrlDecode($data) { 
+        return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT)); 
+    } 
 }

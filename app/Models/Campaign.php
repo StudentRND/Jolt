@@ -28,14 +28,22 @@ class Campaign extends Model
      */
     public function getLeaderboardAttribute()
     {
-        return User
+        $q = User
             ::selectRaw('users.username, COUNT(link_clicks.id) as clicks')
             ->join('links', 'links.user_id', '=', 'users.id')
             ->join('link_clicks', 'link_clicks.link_id', '=', 'links.id')
             ->where('links.campaign_id', '=', $this->id)
             ->orderBy('clicks', 'DESC')
-            ->groupBy('users.username')
-            ->get();
+            ->groupBy('users.username');
+
+        if ($this->ignore_admins)
+
+            $q
+                ->join('campaign_user', 'campaign_user.user_id', '=', 'users.id')
+                ->where('campaign_user.is_admin', '=', false)
+                ->where('user.is_superadmin', '=', false);
+
+        return $q->get();
     }
 
 
