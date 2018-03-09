@@ -147,6 +147,11 @@ class User extends Model
     {
         parent::boot();
 
+        static::saving(function ($model) {
+            // TODO: Should still check if unique username in case somewhere allows the user to update it sometime.
+            $model->rules['username'] = 'required|alpha_dash|min:3|max:16';
+        });
+
         static::creating(function ($model) {
             $model->UpdatePassword($model->password);
             if (self::count() == 0) {

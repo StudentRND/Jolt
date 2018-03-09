@@ -25,6 +25,9 @@ foreach (\config('app.enabled_link_domains') as $domain) {
     \Route::get('/logout', 'WelcomeController@getLogout');
     \Route::get('/dash', 'WelcomeController@getDash');
 
+    \Route::get('/password', 'WelcomeController@getPassword');
+    \Route::post('/password', 'WelcomeController@postPassword');
+
     /////////////////////////
     // Campaigns
     /////////////////////////

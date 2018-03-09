@@ -24,7 +24,7 @@ class WelcomeController extends Controller
             return \redirect('/dash');
         }
         $redirect = parse_url(\URL::previous(), PHP_URL_PATH);
-        if ($redirect === '/login') $redirect = null;
+        if ($redirect === '/login' || $redirect === '/forgot') $redirect = null;
         if (!isset($redirect) && $request->session()->has('redirect')) $redirect = $request->session()->get('redirect');
         if (isset($redirect)) $request->session()->put('redirect', $redirect);
         return \View::make("login", ['redirect' => $redirect]);
@@ -47,7 +47,7 @@ class WelcomeController extends Controller
     public function postRegister(Request $request)
     {
         if (Models\User::IsLoggedIn()) {
-            return \redirect('/dash');
+            return \redirect($request->session()->get('redirect') ?? '/dash');
         }
 
         $user = new Models\User;
@@ -67,7 +67,7 @@ class WelcomeController extends Controller
             $user = Models\User::FromJwt($request->jwt, 'reset');
             if ($user) {
                 $user->Login();
-                return \redirect('/dash');
+                return \redirect($request->session()->get('redirect') ?? '/dash');
             }
         }
 
@@ -89,6 +89,21 @@ class WelcomeController extends Controller
             throw new Exceptions\UserInput("Success! Your password reset link has been emailed to $emailHint");
         }
         throw new Exceptions\UserInput("Couldn't find anyone with that username/password.");
+    }
+
+    public function getPassword()
+    {
+        return \view('password');
+    }
+
+    public function postPassword(Request $request)
+    {
+        $user = Models\User::Me();
+        //var_dump($user);exit;
+        $user->UpdatePassword($request->input('password'));
+        $user->save();
+
+        return \redirect()->back();
     }
 
     public function getLogout()
