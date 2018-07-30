@@ -176,9 +176,11 @@
     api.onUpdate(function(data) {
       var leaderboardElem = $('<ol id="leaderboard"></ol>');
       $.each(data.leaderboard, function(i, leader) {
-        var leaderElem = $('<li><span class="username"></span><span class="clicks"></span></li>');
+        var leaderElem = $('<li><a class="email"><span class="username"></span></a><span class="clicks"></span></li>');
         leaderElem.find('.username').text(leader.username);
         leaderElem.find('.clicks').text(leader.clicks);
+        if (leader.email)
+          leaderElem.find('.email').attr('href', 'mailto:'+leader.email);
         leaderboardElem.append(leaderElem);
       });
       $('#leaderboard').replaceWith(leaderboardElem);

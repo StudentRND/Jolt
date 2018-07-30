@@ -28,13 +28,16 @@ class Campaign extends Model
      */
     public function getLeaderboardAttribute()
     {
+        $selectEmail = (User::IsLoggedIn() && User::Me()->IsAdminFor($this->id)) ? 'users.email, ' : ''
         $q = User
-            ::selectRaw('users.username, COUNT(link_clicks.id) as clicks')
+            ::selectRaw($selectEmail.'users.username, COUNT(link_clicks.id) as clicks')
             ->join('links', 'links.user_id', '=', 'users.id')
             ->join('link_clicks', 'link_clicks.link_id', '=', 'links.id')
             ->where('links.campaign_id', '=', $this->id)
             ->orderBy('clicks', 'DESC')
             ->groupBy('users.username');
+
+
 
         if ($this->ignore_admins)
 
